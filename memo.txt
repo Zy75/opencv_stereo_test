@@ -1,0 +1,23 @@
+keyword: opencv stereo camera calibration rectification triangulation
+
+// this is a test.
+
+// Purpose1: check the arguments of opencv functions. // Purpose2: see if a 3D point can be successfully calculated by triangulation.
+
+// Result: the arguments are well understood and triangulation has been successful.
+
+TIPS:
+1. About Data which is given to calibrateCamera:
+You must give multi depth data. Otherwise, the system could not distinguish if you are using wide angle camera and the camera is placed near, or using narrow angle camera and the camera is placed far.a
+
+2. calibrateCamera: rvecs[i] and tvecs[i] bring model coordinates which is specified in object_points to world coordinates. Probably camera's position is the origin of the world coordinate system.
+
+3. About R and T in <<<< stereoCalibrate(object_points,imagePoints_L,imagePoints_R,CML,DL,CMR,DR,Size(320,240),R,T,E,F, cvTermCriteria(CV_TERMCRIT_ITER+CV_TERMCRIT_EPS, 100, 1e-5),CV_CALIB_FIX_INTRINSIC); >>>>
+ x' = R.x + T  
+ x : L coordinates
+ x': R coordinates
+
+
+
+
+
