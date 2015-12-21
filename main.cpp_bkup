@@ -1,0 +1,148 @@
+#include "opencv2/core/core.hpp"
+#include "opencv2/calib3d/calib3d.hpp"
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+#include "opencv2/contrib/contrib.hpp"
+#include <iostream>
+#include <iomanip>
+
+#define W 0.1
+#define OFFSET 3
+#define FF 300
+#define CX 160
+#define CY 120
+
+
+using namespace cv;
+using namespace std;
+
+int main(int argc, char* argv[])
+{
+   int i,j,k,m;
+  
+   vector<Point3f> obj1;
+
+   for(j=0; j<=OFFSET*2; j++) {
+     for(i=0; i<=OFFSET*2; i++) {
+       
+       obj1.push_back(Point3f(W * (float)( i-OFFSET  ), W * (float)( j-OFFSET ), 1.5));
+       
+     }
+   }
+
+   Mat Ext_L = (Mat_<float>(3,4) <<
+               1,0,0,0,
+               0,1,0,0,
+               0,0,1,0);
+               
+   Mat Ext_R = (Mat_<float>(3,4) <<
+               1,0,0, -0.2,
+               0,1,0,0,
+               0,0,1,0);
+
+   Mat Intr = (Mat_<float>(3, 3) <<
+              FF, 0, CX,
+              0,  FF, CY,
+              0,  0,  1);
+
+   Mat_<float> p1(3,1), p2(3,1), pL(3,1), pR(3,1), p4(4,1);
+
+
+   vector<vector<Point3f> > object_points;
+   vector<vector<Point2f> > imagePoints_L, imagePoints_R;
+
+   float theta;
+
+   for(k=0; k<5; k++) {
+ 
+     vector<Point2f> imageL,imageR;
+
+     Mat imgL(Size(320,240),CV_8UC3, Scalar(0,0,0));
+     Mat imgR(Size(320,240),CV_8UC3, Scalar(0,0,0));
+
+     theta = 3.14159265 * ( k - 2) / 8;
+ 
+     Mat Rot = (Mat_<float>(3, 3) <<
+              cos(theta), -sin(theta), 0,
+              sin(theta),  cos(theta), 0,
+              0,          0,           1);
+ 
+     int s = (OFFSET*2+1)*(OFFSET*2+1);
+    
+     for(j=0; j<s ;j++) {
+       p1(0,0) = (obj1.at(j)).x;
+       p1(1,0) = (obj1.at(j)).y;
+       p1(2,0) = (obj1.at(j)).z;
+    
+       p2 = Rot * p1;
+
+       p4 = (Mat_<float>(4,1) << p2(0,0), p2(1,0), p2(2,0), 1);
+
+       pL = Intr * Ext_L * p4;  
+
+       pR = Intr * Ext_R * p4;
+
+       imageL.push_back(Point2f( pL(0,0) / pL(2,0) , pL(1,0) / pL(2,0) ));
+       imageR.push_back(Point2f( pR(0,0) / pR(2,0) , pR(1,0) / pR(2,0) ));
+       
+       
+       circle(imgL, Point( pL(0,0) / pL(2,0) , pL(1,0) / pL(2,0) ), 2, Scalar(255,255,255));
+       circle(imgR, Point( pR(0,0) / pR(2,0) , pR(1,0) / pR(2,0) ), 2, Scalar(255,255,255));
+       
+     }
+    
+     object_points.push_back(obj1);
+     imagePoints_L.push_back(imageL);
+     imagePoints_R.push_back(imageR);
+
+     namedWindow("R", CV_WINDOW_AUTOSIZE);
+     namedWindow("L", CV_WINDOW_AUTOSIZE);
+     while(cvWaitKey(1) != 'q') {
+   
+       imshow("L", imgL);
+       imshow("R", imgR);
+   
+     }
+     
+   }
+    
+//   Mat CML = Mat(3, 3, CV_32FC1);
+//   Mat CMR = Mat(3, 3, CV_32FC1);
+/*   
+   Mat CM1 = (Mat_<double>(3, 3) <<
+              300, 0, CX,
+              0,  300, CY,
+              0,  0,  1);
+
+   Mat CM2 = (Mat_<double>(3, 3) <<
+              300, 0, CX,
+              0,  300, CY,
+              0,  0,  1);
+*/   Mat CMR = (Mat_<double>(3, 3) <<
+              280, 0, CX,
+              0,  280, CY,
+              0,  0,  1);
+
+   Mat CML = (Mat_<double>(3, 3) <<
+              319, 0, CX,
+              0,  319, CY,
+              0,  0,  1);
+   Mat DL, DR;
+   vector<Mat> rvecsL, tvecsL, rvecsR, tvecsR;
+   Mat R, T, E, F; 
+  
+   calibrateCamera(object_points,imagePoints_L,Size(320,240),CML,DL,rvecsL,tvecsL,CV_CALIB_USE_INTRINSIC_GUESS);
+   
+   cout << fixed << CML << endl;
+       
+
+//   stereoCalibrate(object_points,imagePoints_L,imagePoints_R,CM1,D1,CM2,D2,Size(320,240),R,T,E,F, cvTermCriteria(CV_TERMCRIT_ITER+CV_TERMCRIT_EPS, 100, 1e-5),CV_CALIB_USE_INTRINSIC_GUESS);
+
+//   stereoCalibrate(object_points,imagePoints_L,imagePoints_R,CM1,D1,CM2,D2,Size(320,240),R,T,E,F, cvTermCriteria(CV_TERMCRIT_ITER+CV_TERMCRIT_EPS, 100, 1e-5),CV_CALIB_SAME_FOCAL_LENGTH | CV_CALIB_ZERO_TANGENT_DIST);
+
+
+//   cout << fixed << imagePoints_L.at(0) << endl;
+
+ 
+   return 0;
+}
