@@ -6,6 +6,8 @@ keyword: opencv stereo camera calibration rectification triangulation
 
 // Result: the arguments are well understood and triangulation has been successful.
 
+NOTE: I didn't use distortion in this simulation. 
+
 TIPS:
 1. About Data which is given to calibrateCamera:
 You must give multi depth data. Otherwise, the system could not distinguish if you are using wide angle camera and the camera is placed near, or using narrow angle camera and the camera is placed far.a
