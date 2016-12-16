@@ -15,7 +15,7 @@
 // Purpose1: check the arguments of opencv functions.
 // Purpose2: see if a 3D point can be successfully calculated by triangulation.
 
-// Result: the arguments are well understood and triangulation has been successful. 
+// Result: the arguments can be well understood and triangulation has been successful. 
 
 using namespace cv;
 using namespace std;
@@ -37,6 +37,8 @@ int main(int argc, char* argv[])
   float thetaB = 0.1;
   float thetaC = 0.1;
 
+// Change Extrinsics slightly. This means complete settings are impossible.   
+   
    Mat Ext_L = (Mat_<float>(3,4) <<
                cos(thetaB),0,-sin(thetaB), -1.5*sin(thetaB),
                0,1,0,0,
