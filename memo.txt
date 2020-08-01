@@ -1,24 +1,27 @@
-keyword: opencv stereo camera calibration rectification triangulation
+Keywords: opencv stereo camera calibration rectification triangulation
 
-// this is a test.
+// This is a test.
 
-// Purpose1: check the arguments of opencv functions. 
+// Purpose1: Check the arguments of OpenCV functions. 
 
-// Purpose2: see if a 3D point can be successfully calculated by triangulation.
+// Purpose2: See if a 3D point can be successfully calculated by triangulation.
 
 // Result: the arguments can be well understood and triangulation has been successful.
 
 NOTE: I didn't use distortion in this simulation. 
 
 TIPS:
-1. About Data given to calibrateCamera:
-You must give multi depth data. Otherwise, the system could not distinguish if you are using wide angle camera and the camera is placed near, or using narrow angle camera and the camera is placed far.
+1. 
+This is about Data to calibrateCamera. You must give multi depth data. Otherwise, the system cannot not distinguish if you are using wide angle camera and the camera is placed near, or using narrow angle camera and the camera is placed far.
 
-2. calibrateCamera: rvecs[i] and tvecs[i] bring model coordinates which is specified in object_points to world coordinates. Probably camera's position is the origin of the world coordinate system.
+2. 
+calibrateCamera: rvecs[i] and tvecs[i] bring model coordinates specified in object_points to world coordinates. Probably camera's position is the origin of the world coordinate system.
 
-3. About R and T in <<<< stereoCalibrate(object_points,imagePoints_L,imagePoints_R,CML,DL,CMR,DR,Size(320,240),R,T,E,F, cvTermCriteria(CV_TERMCRIT_ITER+CV_TERMCRIT_EPS, 100, 1e-5),CV_CALIB_FIX_INTRINSIC); >>>>
+3. 
+This is bout R and T in <<<< stereoCalibrate(object_points,imagePoints_L,imagePoints_R,CML,DL,CMR,DR,Size(320,240),R,T,E,F, cvTermCriteria(CV_TERMCRIT_ITER+CV_TERMCRIT_EPS, 100, 1e-5),CV_CALIB_FIX_INTRINSIC); >>>>
+ 
  x' = R.x + T  
  x : L coordinates
  x': R coordinates
  
- 4. I was helped by mathematical expressions explaining opencv function at opencv's site. Without that, I could have been lost.
+ 4. Mathematical expressions on the opencv's site helped me.
